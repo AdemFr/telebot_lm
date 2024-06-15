@@ -28,6 +28,9 @@ You can also test the functionality this way by just creating a new testing bot 
 ## Deploy to Cloud Run
 Make sure the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) is installed and that you have access to a google cloud project via the CLI.
 
+NOTE: When deploying the app for the first time, the public URL is not available yet and the server fails.
+You can deploy the app without the `lifespan` hook, so that the retrieval so it is once deployed, and then redeploy again.
+
 If you followed the setup above, you should be able to just run
 ```bash
 make deploy

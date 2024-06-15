@@ -32,6 +32,6 @@ def process_webhook(update: dict):
 
 
 if __name__ == "__main__":
-    if not os.environ.get("POLLING"):
+    if os.environ.get("POLLING"):
         logger.info("Starting polling bot...")
         bot.infinity_polling()

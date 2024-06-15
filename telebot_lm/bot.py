@@ -6,6 +6,8 @@ import telebot
 logger = logging.getLogger(__name__)
 bot = telebot.TeleBot(os.environ["TOKEN"])
 
+bot.set_chat_menu_button()
+
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
