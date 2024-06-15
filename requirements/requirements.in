@@ -1,0 +1,6 @@
+.
+fastapi
+uvicorn[standard]
+pytelegrambotapi
+google-cloud-run
+setuptools>=62.6
