@@ -1,11 +1,19 @@
+import logging
+import os
+
 import telebot
 from fastapi import FastAPI
 
-from telebot_lm.bot import bot, set_webook
+from telebot_lm.bot import bot
+from telebot_lm.webhook import WEBHOOK_PATH, lifespan
 
-app = FastAPI(docs=None, redoc_url=None)
-WEBHOOK_PATH = "/webhook"
-set_webook(WEBHOOK_PATH)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+
+app = FastAPI(docs=None, redoc_url=None, lifespan=lifespan)
 
 
 @app.get("/")
@@ -24,4 +32,6 @@ def process_webhook(update: dict):
 
 
 if __name__ == "__main__":
-    bot.infinity_polling()
+    if not os.environ.get("POLLING"):
+        logger.info("Starting polling bot...")
+        bot.infinity_polling()

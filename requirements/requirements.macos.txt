@@ -622,8 +622,6 @@ starlette==0.37.2 \
     --hash=sha256:6fe59f29268538e5d0d182f2791a479a0c64638e6935d1c6989e63fb2699c6ee \
     --hash=sha256:9af890290133b79fc3db55474ade20f6220a364a0402e0b556e7cd5e1e093823
     # via fastapi
-.
-    # via -r requirements/requirements.in
 typer==0.12.3 \
     --hash=sha256:070d7ca53f785acbccba8e7d28b08dcd88f79f1fbda035ade0aecec71ca5c914 \
     --hash=sha256:49e73131481d804288ef62598d97a1ceef3058905aa536a1134f90891ba35482

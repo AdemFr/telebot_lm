@@ -1,0 +1,5 @@
+# Ignore everything
+*
+!requirements/requirements.linux.txt
+!telebot_lm/
+!pyproject.toml

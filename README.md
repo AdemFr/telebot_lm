@@ -1,8 +1,6 @@
-# Telegram Webhook Bot on Google Cloud Run
+# Telegram LM chatbot on cloudrun
 
-This repo gives a minimal example for how to run a telegram bot using webhooks on cloud run.
-
-The main reason to do so is cost effectiveness, because one has to only pay for the CPU time that actually handles requests instead of constantly having to run a server which polls for updates. In order to do this, we need to enable scaling to 0 instances of our app, so that it only scales up when requests come in.
+Deploy a custom telegram bot to chat with to cloudrun!
 
 ## Setup
 
@@ -11,10 +9,10 @@ The main reason to do so is cost effectiveness, because one has to only pay for 
     ```
     # .env
     TOKEN=<TELEGRAM API TOKEN>
+    TOKEN_TEST=<OPTIONAL_FOR_PARALLEL_TESTING>
     SERVICE_NAME=<CLOUD RUN SERVICE NAME>
     PROJECT_ID=<GOOGLE PROJECT ID>
     REGION=<GOOGLE SERVICE REGION>
-    TAG=<DOCKER IMAGE TAG>
     PORT=<PORT FOR THE SERVER TO RUN ON>
     ```
 
@@ -23,12 +21,7 @@ The main reason to do so is cost effectiveness, because one has to only pay for 
 1. Install uv with `curl -LsSf https://astral.sh/uv/0.2.11/install.sh | sh`
 2. Make sure to have the correct python version available
 3. Create virtual environment with `uv venv` and sync dependencies with `uv pip sync requirements/requirements.macos.dev.txt`
-
-## Run polling locally
-In order to run the bot via simple polling mechanism locally:
-
-1. Install the package using `poetry install`
-2. Run the polling bot using `make run-polling`
+4. Run the polling bot using `make run-polling`
 
 You can also test the functionality this way by just creating a new testing bot as suggested [here](https://core.telegram.org/bots/features#testing-your-bot).
 
