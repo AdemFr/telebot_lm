@@ -18,6 +18,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN /root/.cargo/bin/uv venv --python $(which python3.11) $VIRTUAL_ENV \
     && /root/.cargo/bin/uv pip sync ./requirements.txt
 
+
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
 COPY . .
 RUN /root/.cargo/bin/uv pip install .
 

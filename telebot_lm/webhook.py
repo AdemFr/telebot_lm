@@ -1,8 +1,6 @@
 import logging
 import os
-from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
 from google.cloud.run_v2.services.services.client import ServicesClient
 
 from telebot_lm.bot import bot
@@ -29,18 +27,18 @@ def _get_public_url():
     return resp.uri
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+def attach():
     """NOTE When deploying for the first time, this will fail, because there is no public URL yet."""
-    if not os.environ.get("POLLING"):
-        # Remove webhook, it fails sometimes the set if there is a previous webhook
-        # bot.remove_webhook()
-        logger.info("Setting webhook...")
-        webhook_url = _get_public_url() + WEBHOOK_PATH
-        bot.set_webhook(url=webhook_url)
-        logger.info("Setting webhook...OK")
-    yield
+    if os.environ.get("POLLING"):
+        return
+    logger.info("Setting webhook...")
+    webhook_url = _get_public_url() + WEBHOOK_PATH
+    bot.set_webhook(url=webhook_url)
+    logger.info("Setting webhook...OK")
 
-    if not os.environ.get("POLLING"):
-        logger.info("Removing webhook...")
-        bot.remove_webhook()
+
+def detach():
+    if os.environ.get("POLLING"):
+        return
+    logger.info("Removing webhook...")
+    bot.remove_webhook()

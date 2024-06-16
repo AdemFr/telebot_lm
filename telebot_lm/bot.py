@@ -1,6 +1,7 @@
 import logging
 import os
 
+import ollama
 import telebot
 
 logger = logging.getLogger(__name__)
@@ -16,4 +17,17 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
-    bot.reply_to(message, message.text)
+    stream = ollama.chat(
+        model="phi3:mini",
+        messages=[{"role": "user", "content": message.text}],
+        stream=True,
+    )
+
+    output = ""
+    for chunk in stream:
+        _output = chunk["message"]["content"]
+        output += _output
+        print(_output, end="", flush=True)
+        if chunk["done"]:
+            print("")
+    bot.reply_to(message, output)
