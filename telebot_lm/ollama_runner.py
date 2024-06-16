@@ -81,28 +81,3 @@ class OllamaRunner:
     def handle_output(process):
         for c in iter(lambda: process.stdout.read(), b""):
             logger.info(c.decode())
-
-
-if __name__ == "__main__":
-    try:
-        runner = OllamaRunner()
-        runner.start_ollama()
-        logger.info("Ollama started.")
-
-        stream = ollama.chat(
-            model="phi3:mini",
-            messages=[{"role": "user", "content": "Why is the sky blue?"}],
-            stream=True,
-        )
-
-        output = ""
-        for chunk in stream:
-            _output = chunk["message"]["content"]
-            output += _output
-            print(_output, end="", flush=True)
-        logger.info(f"Output: {output}")
-
-    except Exception as e:
-        logger.error(e, exc_info=True)
-    finally:
-        runner.stop_ollama()
