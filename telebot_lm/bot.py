@@ -1,5 +1,6 @@
 import logging
 import os
+from functools import wraps
 
 import telebot
 from telebot import types
@@ -27,28 +28,46 @@ gcp_handler = GCPInstanceHandler(
     zone=os.environ["ZONE"],
     service_name=os.environ["SERVICE_NAME"],
 )
+ADMIN_CHAT_ID = int(os.environ.get("ADMIN_CHAT_ID", -1))
+RESTRICTED_IDS = [ADMIN_CHAT_ID]
+
+
+def restricted(func):
+    @wraps(func)
+    def wrapped(message: types.Message):
+        user_id = message.chat.id
+        if user_id not in RESTRICTED_IDS:
+            bot.reply_to(message, "Not authorized.")
+            return
+        return func(message)
+
+    return wrapped
 
 
 @bot.message_handler(commands=["start_machine"])
-def start_machine(message):
+@restricted
+def start_machine(message: types.Message):
     result = gcp_handler.start_instance()
     bot.reply_to(message, result)
 
 
 @bot.message_handler(commands=["stop_machine"])
-def stop_machine(message):
+@restricted
+def stop_machine(message: types.Message):
     result = gcp_handler.stop_instance()
     bot.reply_to(message, result)
 
 
 @bot.message_handler(commands=["machine_status"])
+@restricted
 def get_staus(message: types.Message):
     result = gcp_handler.get_status()
     bot.reply_to(message, result)
 
 
 @bot.message_handler(commands=["start_ollama"])
-def start_ollama(message):
+@restricted
+def start_ollama(message: types.Message):
     if not os.environ.get("POLLING"):
         bot.reply_to(message, "Running as webhook, please start on VM bot.")
     OllamaRunner().start_ollama()
@@ -56,13 +75,15 @@ def start_ollama(message):
 
 
 @bot.message_handler(commands=["stop_ollama"])
-def stop_ollama(message):
+@restricted
+def stop_ollama(message: types.Message):
     OllamaRunner().stop_ollama()
     bot.reply_to(message, "Ollama stopped")
 
 
 @bot.message_handler(commands=["get_models"])
-def get_models(message):
+@restricted
+def get_models(message: types.Message):
     markup = types.InlineKeyboardMarkup()
     buttons = [
         types.InlineKeyboardButton(text=model, callback_data=model)
@@ -86,7 +107,8 @@ def handle_model_choice(call):
 
 
 @bot.message_handler(func=lambda message: True)
-def chat(message):
+@restricted
+def chat(message: types.Message):
     runner = OllamaRunner()
     if runner.process is None:
         bot.reply_to(message, "Ollama is not running. Start it with /start_ollama")

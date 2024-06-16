@@ -22,18 +22,6 @@ buildx: # Build docker image with loaded env variables
 push: buildx # Build and push docker image
 	@docker push ${IMAGE_NAME}
 
-.PHONY: drun
-drun: build # Build and run server in docker container
-	@docker run -it --rm \
-		-p ${PORT}:${PORT} \
-		-e TOKEN=${TOKEN} \
-		-e PORT=${PORT} \
-		-e PROJECT_ID=${PROJECT_ID} \
-		-e REGION=${REGION} \
-		-e SERVICE_NAME=${SERVICE_NAME} \
-		-e POLLING=True \
-		${IMAGE_NAME}
-
 .PHONY: run
 run-poll: # Run server inside poetry shell
 	@TOKEN=${TOKEN_TEST} \
@@ -41,6 +29,7 @@ run-poll: # Run server inside poetry shell
 	PROJECT_ID=${PROJECT_ID} \
 	ZONE=${ZONE} \
 	SERVICE_NAME=${SERVICE_NAME} \
+	ADMIN_CHAT_ID=${ADMIN_CHAT_ID} \
 	python telebot_lm/main.py
 
 .PHONY: deploy
@@ -49,7 +38,7 @@ deploy: push # Build, push and deploy cloud run service
 		--project ${PROJECT_ID} \
 		--image ${IMAGE_NAME} \
 		--region ${REGION} \
-		--set-env-vars TOKEN=${TOKEN_MANAGER},PROJECT_ID=${PROJECT_ID},REGION=${REGION},SERVICE_NAME=${SERVICE_NAME},ZONE=${ZONE} \
+		--set-env-vars TOKEN=${TOKEN_MANAGER},PROJECT_ID=${PROJECT_ID},REGION=${REGION},SERVICE_NAME=${SERVICE_NAME},ZONE=${ZONE},ADMIN_CHAT_ID=${ADMIN_CHAT_ID} \
 		--allow-unauthenticated \
 		--min-instances=0 \
 		--max-instances=1 \
@@ -75,7 +64,7 @@ create_vm: push # Build, push and deploy cloud run service
 		--container-image ${IMAGE_NAME} \
 		--container-command "python" \
 		--container-arg "telebot_lm/main.py" \
-		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME} \
+		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME},ADMIN_CHAT_ID=${ADMIN_CHAT_ID} \
 		--machine-type ${MACHINE_TYPE} \
 		--project ${PROJECT_ID} \
 
@@ -85,7 +74,7 @@ update_vm: push # Build, push and deploy cloud run service
 		--container-image ${IMAGE_NAME} \
 		--container-command "python" \
 		--container-arg "telebot_lm/main.py" \
-		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME} \
+		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME},ADMIN_CHAT_ID=${ADMIN_CHAT_ID} \
 		--project ${PROJECT_ID} \
 
 
