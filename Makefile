@@ -56,3 +56,13 @@ deploy: push # Build, push and deploy cloud run service
 		--cpu 1 \
 		--timeout 30 \
 
+.PHONY: compile
+compile:
+	@uv pip compile --emit-index-url --emit-find-links --no-cache --python 3.11 --python-platform linux --python-version 3.11 --generate-hashes --output-file requirements/requirements.linux.txt requirements/requirements.in > /dev/null
+	@uv pip compile --emit-index-url --emit-find-links --no-cache --python 3.11 --python-platform macos --python-version 3.11 --generate-hashes --output-file requirements/requirements.macos.txt requirements/requirements.in > /dev/null
+	@uv pip compile --emit-index-url --emit-find-links --no-cache --python 3.11 --python-platform macos --python-version 3.11 --generate-hashes --output-file requirements/requirements.macos.dev.txt requirements/requirements.dev.in > /dev/null
+
+
+.PHONY: sync
+sync: compile
+	@uv pip sync requirements/requirements.macos.dev.txt
