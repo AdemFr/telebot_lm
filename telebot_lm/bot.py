@@ -29,16 +29,6 @@ gcp_handler = GCPInstanceHandler(
 )
 
 
-# @bot.message_handler(commands=["reset"])
-# def rest_keyboard(message):
-#     markup = types.ReplyKeyboardRemove()
-#     bot.send_message(
-#         message.chat.id, "Inline keyboard options have been reset.", reply_markup=markup
-#     )
-
-# answer_callback_query?
-
-
 @bot.message_handler(commands=["start_machine"])
 def start_machine(message):
     result = gcp_handler.start_instance()
