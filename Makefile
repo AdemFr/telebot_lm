@@ -86,7 +86,6 @@ update_vm: push # Build, push and deploy cloud run service
 		--container-command "python" \
 		--container-arg "telebot_lm/main.py" \
 		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME} \
-		--machine-type ${MACHINE_TYPE} \
 		--project ${PROJECT_ID} \
 
 
