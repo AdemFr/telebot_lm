@@ -14,6 +14,7 @@ class OllamaRunner:
     _instance = None
     process = None
     thread = None
+    model = "phi3:mini"
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -23,10 +24,16 @@ class OllamaRunner:
     def start_ollama(self):
         self.process = subprocess.Popen(["ollama", "serve"], stdout=subprocess.PIPE)
         time.sleep(3)
+        logger.info("Ollama process started")
 
         # Start a thread to handle the process's output
         self.thread = threading.Thread(target=self.handle_output, args=(self.process,))
         self.thread.start()
+        logger.info("Ollama logging thread started")
+
+        logger.info("Start pulling model...")
+        ollama.pull(self.model)
+        logger.info("Done pulling model")
 
     def stop_ollama(self):
         if self.process:

@@ -21,8 +21,6 @@ def _get_public_url():
 
     client = ServicesClient()
     resp = client.get_service(name=full_service_name)
-    logger.info(f"{resp=}")
-    logger.info(f"{dir(resp)=}")
     logger.info(f"Public URL: {resp.uri}")
     return resp.uri
 

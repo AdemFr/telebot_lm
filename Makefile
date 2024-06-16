@@ -53,8 +53,9 @@ deploy: push # Build, push and deploy cloud run service
 		--min-instances=0 \
 		--max-instances=1 \
 		--port ${PORT} \
-		--cpu 1 \
-		--timeout 30 \
+		--cpu 4 \
+		--memory 8G \
+		--timeout 1m \
 
 .PHONY: compile
 compile:
