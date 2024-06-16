@@ -4,3 +4,4 @@ pytelegrambotapi
 google-cloud-run
 setuptools>=62.6
 ollama
+google-api-python-client

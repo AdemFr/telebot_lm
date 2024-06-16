@@ -5,16 +5,23 @@ import time
 
 import ollama
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+MODELS = {
+    "phi3": "phi3:mini",
+    "gemma": "gemma:2B",
+    "qwen": "qwen:1.8b",
+}
+
+
 class OllamaRunner:
+    """Runner singleton for Ollama process."""
+
     _instance = None
     process = None
     thread = None
-    model = "phi3:mini"
+    model = MODELS["phi3"]
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -44,6 +51,31 @@ class OllamaRunner:
             self.thread.join()
             self.thread = None
         logger.info("Thread stopped")
+
+    def set_model(self, model):
+        if model not in MODELS:
+            logger.error(f"Model {model} not found")
+            return
+        self.model = model
+        ollama.pull(self.model)
+        logger.info(f"Model set to {model}")
+
+    def chat(self, message):
+        stream = ollama.chat(
+            model=self.model,
+            messages=[{"role": "user", "content": message.text}],
+            stream=True,
+        )
+
+        logger.info(f"Start generating response to {message.text}...")
+        response = ""
+        for chunk in stream:
+            _output = chunk["message"]["content"]
+            response += _output
+            print(_output, end="", flush=True)
+            if chunk["done"]:
+                print("")
+        return response
 
     @staticmethod
     def handle_output(process):

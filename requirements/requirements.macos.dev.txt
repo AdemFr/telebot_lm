@@ -204,14 +204,27 @@ google-api-core==2.19.0 \
     --hash=sha256:cf1b7c2694047886d2af1128a03ae99e391108a08804f87cfd35970e49c9cd10
     # via
     #   -r requirements/requirements.macos.txt
+    #   google-api-python-client
     #   google-cloud-run
+google-api-python-client==2.133.0 \
+    --hash=sha256:293092905b66a046d3187a99ac454e12b00cc2c70444f26eb2f1f9c1a82720b4 \
+    --hash=sha256:396fe676ea0dfed066654dcf9f8dea77a1342f9d9bb23bb88e45b7b81e773926
+    # via -r requirements/requirements.macos.txt
 google-auth==2.30.0 \
     --hash=sha256:8df7da660f62757388b8a7f249df13549b3373f24388cb5d2f1dd91cc18180b5 \
     --hash=sha256:ab630a1320f6720909ad76a7dbdb6841cdf5c66b328d690027e4867bdfb16688
     # via
     #   -r requirements/requirements.macos.txt
     #   google-api-core
+    #   google-api-python-client
+    #   google-auth-httplib2
     #   google-cloud-run
+google-auth-httplib2==0.2.0 \
+    --hash=sha256:38aa7badf48f974f1eb9861794e9c0cb2a0511a4ec0679b1f886d108f5640e05 \
+    --hash=sha256:b65a0a2123300dd71281a7bf6e64d65a0759287df52729bdd1ae2e47dc311a3d
+    # via
+    #   -r requirements/requirements.macos.txt
+    #   google-api-python-client
 google-cloud-run==0.10.5 \
     --hash=sha256:0f68125f13d1a87f74e1e78c37fa6afb4b094d76dad2b9f951d5526648e8939c \
     --hash=sha256:d6c546693ad1232794b75c617871f2e46283c0cd0c4cc3886b85b8f0a3ba575f
@@ -302,6 +315,13 @@ httpcore==1.0.5 \
     # via
     #   -r requirements/requirements.macos.txt
     #   httpx
+httplib2==0.22.0 \
+    --hash=sha256:14ae0a53c1ba8f3d37e9e27cf37eabb0fb9980f435ba405d546948b009dd64dc \
+    --hash=sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81
+    # via
+    #   -r requirements/requirements.macos.txt
+    #   google-api-python-client
+    #   google-auth-httplib2
 httptools==0.6.1 \
     --hash=sha256:00d5d4b68a717765b1fabfd9ca755bd12bf44105eeb806c03d1962acd9b8e563 \
     --hash=sha256:0ac5a0ae3d9f4fe004318d64b8a854edd85ab76cffbf7ef5e32920faef62f142 \
@@ -708,6 +728,12 @@ pygments==2.18.0 \
     #   -r requirements/requirements.macos.txt
     #   ipython
     #   rich
+pyparsing==3.1.2 \
+    --hash=sha256:a1bac0ce561155ecc3ed78ca94d3c9378656ad4c94c1270de543f621420f94ad \
+    --hash=sha256:f9db75911801ed778fe61bb643079ff86601aca99fcae6345aa67292038fb742
+    # via
+    #   -r requirements/requirements.macos.txt
+    #   httplib2
 pytelegrambotapi==4.19.1 \
     --hash=sha256:22b0835f06a79eea93cc2c29079e4bb10f706b282ae10a3e537557b4679b12f2 \
     --hash=sha256:cd5e5188a49f50a5c1fb1d8d195a852a05ae3525d21f26fbe8365cb408ee1342
@@ -1069,6 +1095,12 @@ ujson==5.10.0 \
     # via
     #   -r requirements/requirements.macos.txt
     #   fastapi
+uritemplate==4.1.1 \
+    --hash=sha256:4346edfc5c3b79f694bccd6d6099a322bbeb628dbf2cd86eea55a456ce5124f0 \
+    --hash=sha256:830c08b8d99bdd312ea4ead05994a38e8936266f84b9a7878232db50b044e02e
+    # via
+    #   -r requirements/requirements.macos.txt
+    #   google-api-python-client
 urllib3==2.2.1 \
     --hash=sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d \
     --hash=sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19

@@ -18,10 +18,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     webhook.attach()
-    runner = OllamaRunner()
-    runner.start_ollama()
     yield
-    runner.stop_ollama()
     webhook.detach()
 
 
@@ -46,9 +43,8 @@ def process_webhook(update: dict):
 if __name__ == "__main__":
     if os.environ.get("POLLING"):
         try:
+            bot.remove_webhook()  # Otherwise polling breaks when one still exists
             logger.info("Starting polling bot...")
-            runner = OllamaRunner()
-            runner.start_ollama()
             bot.infinity_polling()
         finally:
-            runner.stop_ollama()
+            OllamaRunner().stop_ollama()

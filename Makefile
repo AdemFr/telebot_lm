@@ -35,12 +35,13 @@ drun: build # Build and run server in docker container
 		${IMAGE_NAME}
 
 .PHONY: run
-run:
-	@TOKEN=${TOKEN} uvicorn telebot_lm.main:app --reload --host 0.0.0.0 --port ${PORT}
-
-.PHONY: run
 run-poll: # Run server inside poetry shell
-	@TOKEN=${TOKEN_TEST} POLLING=True python telebot_lm/main.py
+	@TOKEN=${TOKEN_TEST} \
+	POLLING=True \
+	PROJECT_ID=${PROJECT_ID} \
+	ZONE=${ZONE} \
+	SERVICE_NAME=${SERVICE_NAME} \
+	python telebot_lm/main.py
 
 .PHONY: deploy
 deploy: push # Build, push and deploy cloud run service
@@ -48,14 +49,13 @@ deploy: push # Build, push and deploy cloud run service
 		--project ${PROJECT_ID} \
 		--image ${IMAGE_NAME} \
 		--region ${REGION} \
-		--set-env-vars TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},REGION=${REGION},SERVICE_NAME=${SERVICE_NAME} \
+		--set-env-vars TOKEN=${TOKEN_MANAGER},PROJECT_ID=${PROJECT_ID},REGION=${REGION},SERVICE_NAME=${SERVICE_NAME},ZONE=${ZONE} \
 		--allow-unauthenticated \
 		--min-instances=0 \
 		--max-instances=1 \
 		--port ${PORT} \
-		--cpu 4 \
-		--memory 8G \
-		--timeout 1m \
+		--cpu 1 \
+		--timeout 1m
 
 .PHONY: compile
 compile:
@@ -67,3 +67,28 @@ compile:
 .PHONY: sync
 sync: compile
 	@uv pip sync requirements/requirements.macos.dev.txt
+
+
+.PHONY: create_vm
+create_vm: push # Build, push and deploy cloud run service
+	@gcloud compute instances create-with-container telebot-lm \
+		--container-image ${IMAGE_NAME} \
+		--container-command "python" \
+		--container-arg "telebot_lm/main.py" \
+		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME} \
+		--machine-type ${MACHINE_TYPE} \
+		--project ${PROJECT_ID} \
+
+.PHONY: update_vm
+update_vm: push # Build, push and deploy cloud run service
+	@gcloud compute instances update-container telebot-lm \
+		--container-image ${IMAGE_NAME} \
+		--container-command "python" \
+		--container-arg "telebot_lm/main.py" \
+		--container-env POLLING=True,TOKEN=${TOKEN},PROJECT_ID=${PROJECT_ID},ZONE=${ZONE},SERVICE_NAME=${SERVICE_NAME} \
+		--machine-type ${MACHINE_TYPE} \
+		--project ${PROJECT_ID} \
+
+
+.PHONY: update_all
+update_all: deploy update_vm
