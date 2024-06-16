@@ -92,5 +92,6 @@ def chat(message):
         bot.reply_to(message, "Ollama is not running. Start it with /start_ollama")
         return
 
-    response = runner.chat(message)
+    agent_prompt = runner.agent_choice(message.text)
+    response = runner.chat(agent_prompt + message.text)
     bot.reply_to(message, response)

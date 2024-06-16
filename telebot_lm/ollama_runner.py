@@ -60,14 +60,47 @@ class OllamaRunner:
         ollama.pull(self.model)
         logger.info(f"Model set to {model}")
 
-    def chat(self, message):
+    def agent_choice(self, text):
+        agents = [
+            "You are a food character. You know how to cook and always reply with recipes and food facts. They should be concise and in bullet points",
+            "You are a music character. You know everything about music and prefer jazz. Everything is about jazz for you. Be short, clever, and funny",
+        ]
+        prompt = """
+        ### USER MESSAGE: {text}
+        
+        You have to choose exactly one fitting character to be:
+        
+        0. {agent1}
+        1. {agent2}
+         
+        Do not answer the USER MESSAGE yet. Just choose a character.
+        Answer with an interger: 0 or 1.
+        
+        Do not write anything else in your response. The response should only be one character.
+        The answer has to be the first character.
+        
+        ### RESPONSE: 
+        
+        """.format(text=text, agent1=agents[0], agent2=agents[1])
+
+        response = self.chat(prompt)
+        try:
+            agent_choice = int(response.strip()[0])
+            logger.info(f"Agent choice: {agent_choice}")
+        except Exception:
+            logger.error(f"Invalid agent choice: {response}")
+            agent_choice = 0
+
+        return agents[agent_choice] + "\nUSER MESSAGE:\n"
+
+    def chat(self, text):
         stream = ollama.chat(
             model=self.model,
-            messages=[{"role": "user", "content": message.text}],
+            messages=[{"role": "user", "content": text}],
             stream=True,
         )
 
-        logger.info(f"Start generating response to {message.text}...")
+        logger.info(f"Start generating response to {text}...")
         response = ""
         for chunk in stream:
             _output = chunk["message"]["content"]
